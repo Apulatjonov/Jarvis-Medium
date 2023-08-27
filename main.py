@@ -1,28 +1,32 @@
-import pyttsx3
-import speech_recognition as sr
 import datetime
-import wikipedia
-import smtplib
-import imaplib, email
-from email.header import decode_header
-import webbrowser as wb
+import email
+import imaplib
 import os
-import time
+import requests
+import smtplib
+import webbrowser as wb
+from email.header import decode_header
+
 import psutil
 import pyautogui
 import pyjokes
+import pyttsx3
+import speech_recognition as sr
+import wikipedia
 
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0])
 
 global memory
 memory = "nothing yet!"
+
 
 def time_():
     time = datetime.datetime.now().strftime("%I:%M:%S")
     speak("current time is ")
     speak(time)
+
 
 def year_to_string(year):
     thousands = int(year / 1000)
@@ -54,7 +58,7 @@ def year_to_string(year):
         elif tens == 6:
             answer += "sixty"
         elif tens == 7:
-            answer+= "seventy"
+            answer += "seventy"
         elif tens == 8:
             answer += "eighty"
         elif tens == 9:
@@ -101,6 +105,7 @@ def year_to_string(year):
             answer += "ninth"
 
     return answer
+
 
 def day_to_string(day):
     answer = ""
@@ -176,6 +181,7 @@ def day_to_string(day):
             answer = "thirty first"
     return answer
 
+
 def date_():
     year = datetime.datetime.now().year
     month = datetime.datetime.now().month
@@ -209,6 +215,7 @@ def date_():
     else:
         speak("December")
 
+
 def greeting():
     hour = datetime.datetime.now().hour
 
@@ -221,18 +228,20 @@ def greeting():
     else:
         speak("Good Night Sir!")
 
+
 def send_mail(to, content, subject):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.ehlo()
         server.starttls()
         # message = 'Subject: {}\n\n{}'.format(subject, content)
-        server.login("email","password")
-        server.sendmail("email",to,content)
+        server.login("email", "password")
+        server.sendmail("email", to, content)
         server.close()
         speak("Email sent successfully!")
     except Exception as e:
         speak("Exception occurred!")
+
 
 def check_mail(user):
     if user == "main" or user == "first":
@@ -244,14 +253,15 @@ def check_mail(user):
 
     def clean(text):
         return "".join(c if c.isalnum() else "_" for c in text)
+
     imap = imaplib.IMAP4_SSL("imap.gmail.com")
     imap.login(username, password)
 
     status, messages = imap.select("INBOX")
     N = 3
     messages = int(messages[0])
-    for i in range(messages, messages-N, -1):
-        res, msg = imap.fetch(str(i),"(RFC822)")
+    for i in range(messages, messages - N, -1):
+        res, msg = imap.fetch(str(i), "(RFC822)")
         for response in msg:
             if isinstance(response, tuple):
                 msg = email.message_from_bytes(response[1])
@@ -304,6 +314,7 @@ def check_mail(user):
                 imap.close()
                 imap.logout()
 
+
 def cpu():
     battery = psutil.sensors_battery().percent
     if battery == 100:
@@ -317,20 +328,23 @@ def cpu():
     else:
         speak("Battery is at " + str(battery))
 
+
 def joke():
     speak(pyjokes.get_joke())
 
+
 def find_location(query):
     if ("find" in query):
-        query = query.replace("find","")
+        query = query.replace("find", "")
     if "show" in query:
         query = query.replace("show", "")
     if ("location" in query):
-        query = query.replace("location","")
+        query = query.replace("location", "")
     if ("address" in query):
-        query = query.replace("address","")
+        query = query.replace("address", "")
     speak("showing the location")
     wb.open("https://www.google.com/maps/place/" + query)
+
 
 def screenshot():
     img = pyautogui.screenshot()
@@ -361,6 +375,7 @@ def take_command():
         return "None"
     return query
 
+
 def process(empty, just):
     if empty == True:
         query = take_command()
@@ -370,7 +385,7 @@ def process(empty, just):
         time_()
     elif (("date" in query) and ("today" in query)) or (("what" in query) and ("day" in query) and ("today" in query)):
         date_()
-    elif "wikipedia" in query:
+    elif "search wikipedia" in query:
         speak("Searching...")
         query = query.replace("wikipedia", "")
         failure = False
@@ -402,7 +417,9 @@ def process(empty, just):
         while content == "None":
             content = take_command()
         send_mail(to, content, "TEST Subject")
-    elif ("check email" in query) or ("check mail" in query) or ("check my email" in query) or ("check my mail" in query) or ("open my email" in query) or ("open my mail" in query) or (("news" in query) and ("email" in query) and ("my" in query)):
+    elif ("check email" in query) or ("check mail" in query) or ("check my email" in query) or (
+            "check my mail" in query) or ("open my email" in query) or ("open my mail" in query) or (
+            ("news" in query) and ("email" in query) and ("my" in query)):
         try:
             print("Checking....")
             speak("Checking....")
@@ -412,25 +429,31 @@ def process(empty, just):
             pass
     elif (("thank" in query) and ("you" in query) or ("thanks" in query)):
         speak("You are always welcome")
-    elif ("what is your name" in query) or (("what" in query) and ("your" in query) and ("name" in query)) or (("your" in query) and ("name" in query)):
-        speak("My name is Veronica")
-    elif ("hello" in query) or ("hi " in query) or ("good" in query and (("morning" in query) or ("afternoon" in query) or ("evening" in query) or ("night" in query))):
+    elif ("what is your name" in query) or (("what" in query) and ("your" in query) and ("name" in query)) or (
+            ("your" in query) and ("name" in query)):
+        speak("My name is Jarvis")
+    elif ("hello" in query) or ("hi " in query) or ("good" in query and (
+            ("morning" in query) or ("afternoon" in query) or ("evening" in query) or ("night" in query))):
         greeting()
         speak("How are you doing?")
-    elif (("search" in query) or ("open" in query)) and (("internet" in query) or ("google" in query) or ("chrome" in query)):
+    elif (("search" in query) or ("open" in query)) and (
+            ("internet" in query) or ("google" in query) or ("chrome" in query)):
         speak("what you want to search?")
         answer = "None"
         while answer == "None":
             answer = take_command()
         chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
-        wb.get(chrome_path).open_new_tab("https://www.google.com/search?q=" + answer + "&rlz=1C1GCEA_enUZ938UZ938&sxsrf=ALiCzsbqICJxTzjJW2HF5l-ONOpwhsOXNg%3A1653344647243&ei=hwmMYum_DqKSxc8P_82iwAo&ved=0ahUKEwipn4_j1Pb3AhUiSfEDHf-mCKgQ4dUDCA4&uact=5&oq=apulatjonov&gs_lcp=Cgdnd3Mtd2l6EAMyBggAEA0QCjIICAAQHhANEAoyCAgAEB4QDRAKMgoIABAeEA8QDRAKMgoIABAeEA0QBRAKMgwIABAeEA8QDRAFEAoyCggAEB4QDxANEAoyCggAEB4QDxANEAo6BwgAEEcQsAM6BwgAELADEEM6BAgjECc6BQgAEJECOggILhDUAhCRAjoLCC4QgAQQxwEQ0QM6CwguEIAEEMcBEKMCOgUIABCABDoECAAQQzoKCC4QxwEQowIQQzoICC4QgAQQ1AI6BQguEIAEOgcIABCABBAKOgQIABAKSgQIQRgASgQIRhgAUKMFWLMPYLAQaAJwAXgAgAHXAYgBiA2SAQUwLjguMpgBAKABAcgBCsABAQ&sclient=gws-wiz")
-    elif (("search" in query) or ("open" in query)) and (("youtube" in query) or (("you" in query) and ("tube" in query))):
+        wb.get(chrome_path).open_new_tab(
+            "https://www.google.com/search?q=" + answer + "&rlz=1C1GCEA_enUZ938UZ938&sxsrf=ALiCzsbqICJxTzjJW2HF5l-ONOpwhsOXNg%3A1653344647243&ei=hwmMYum_DqKSxc8P_82iwAo&ved=0ahUKEwipn4_j1Pb3AhUiSfEDHf-mCKgQ4dUDCA4&uact=5&oq=apulatjonov&gs_lcp=Cgdnd3Mtd2l6EAMyBggAEA0QCjIICAAQHhANEAoyCAgAEB4QDRAKMgoIABAeEA8QDRAKMgoIABAeEA0QBRAKMgwIABAeEA8QDRAFEAoyCggAEB4QDxANEAoyCggAEB4QDxANEAo6BwgAEEcQsAM6BwgAELADEEM6BAgjECc6BQgAEJECOggILhDUAhCRAjoLCC4QgAQQxwEQ0QM6CwguEIAEEMcBEKMCOgUIABCABDoECAAQQzoKCC4QxwEQowIQQzoICC4QgAQQ1AI6BQguEIAEOgcIABCABBAKOgQIABAKSgQIQRgASgQIRhgAUKMFWLMPYLAQaAJwAXgAgAHXAYgBiA2SAQUwLjguMpgBAKABAcgBCsABAQ&sclient=gws-wiz")
+    elif (("search" in query) or ("open" in query)) and (
+            ("youtube" in query) or (("you" in query) and ("tube" in query))):
         speak("what you want to search?")
         answer = "None"
         while answer == "None":
             answer = take_command()
         chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
-        wb.get(chrome_path).open_new_tab("https://www.youtube.com/search?q=" + answer + "&rlz=1C1GCEA_enUZ938UZ938&sxsrf=ALiCzsbqICJxTzjJW2HF5l-ONOpwhsOXNg%3A1653344647243&ei=hwmMYum_DqKSxc8P_82iwAo&ved=0ahUKEwipn4_j1Pb3AhUiSfEDHf-mCKgQ4dUDCA4&uact=5&oq=apulatjonov&gs_lcp=Cgdnd3Mtd2l6EAMyBggAEA0QCjIICAAQHhANEAoyCAgAEB4QDRAKMgoIABAeEA8QDRAKMgoIABAeEA0QBRAKMgwIABAeEA8QDRAFEAoyCggAEB4QDxANEAoyCggAEB4QDxANEAo6BwgAEEcQsAM6BwgAELADEEM6BAgjECc6BQgAEJECOggILhDUAhCRAjoLCC4QgAQQxwEQ0QM6CwguEIAEEMcBEKMCOgUIABCABDoECAAQQzoKCC4QxwEQowIQQzoICC4QgAQQ1AI6BQguEIAEOgcIABCABBAKOgQIABAKSgQIQRgASgQIRhgAUKMFWLMPYLAQaAJwAXgAgAHXAYgBiA2SAQUwLjguMpgBAKABAcgBCsABAQ&sclient=gws-wiz")
+        wb.get(chrome_path).open_new_tab(
+            "https://www.youtube.com/search?q=" + answer + "&rlz=1C1GCEA_enUZ938UZ938&sxsrf=ALiCzsbqICJxTzjJW2HF5l-ONOpwhsOXNg%3A1653344647243&ei=hwmMYum_DqKSxc8P_82iwAo&ved=0ahUKEwipn4_j1Pb3AhUiSfEDHf-mCKgQ4dUDCA4&uact=5&oq=apulatjonov&gs_lcp=Cgdnd3Mtd2l6EAMyBggAEA0QCjIICAAQHhANEAoyCAgAEB4QDRAKMgoIABAeEA8QDRAKMgoIABAeEA0QBRAKMgwIABAeEA8QDRAFEAoyCggAEB4QDxANEAoyCggAEB4QDxANEAo6BwgAEEcQsAM6BwgAELADEEM6BAgjECc6BQgAEJECOggILhDUAhCRAjoLCC4QgAQQxwEQ0QM6CwguEIAEEMcBEKMCOgUIABCABDoECAAQQzoKCC4QxwEQowIQQzoICC4QgAQQ1AI6BQguEIAEOgcIABCABBAKOgQIABAKSgQIQRgASgQIRhgAUKMFWLMPYLAQaAJwAXgAgAHXAYgBiA2SAQUwLjguMpgBAKABAcgBCsABAQ&sclient=gws-wiz")
     elif (("check" in query) or (("What" in query) and ("my" in query))) and ("battery" in query):
         cpu()
     elif ((("tell" in query) or ("can") in query) and ("joke" in query)) or (("tell" in query) and ("funny" in query)):
@@ -441,7 +464,7 @@ def process(empty, just):
         quit()
     elif ("telegram" in query) and ("open" in query):
         speak("Opening telegram...")
-        telegram_path = r'C:/Users/hp/AppData/Roaming/Telegram Desktop/Telegram.exe'
+        telegram_path = r'C:/Users/user/AppData/Roaming/Telegram Desktop/Telegram.exe'
         os.startfile(telegram_path)
     elif (("take" in query) or ("write" in query)) and ("note" in query):
         speak("what should I write, Sire?")
@@ -454,7 +477,7 @@ def process(empty, just):
                 silent = True
         if silent:
             speak("Oh, OK!")
-        file = open('C:/Users/hp/Desktop/notes.txt', 'a')
+        file = open('C:/Users/user/Desktop/notes.txt', 'a')
         speak("Sire should I include date and time?")
         ans = "None"
         while ans == "None":
@@ -467,7 +490,7 @@ def process(empty, just):
         speak("Done!")
     elif (("show" in query) or ("what" in query)) and ("note" in query):
         speak("Showing notes!")
-        file = open('C:/Users/hp/Desktop/notes.txt', "r")
+        file = open('C:/Users/user/Desktop/notes.txt', "r")
         print(file.read())
     elif ("snapshot" in query) or ("screenshot" in query):
         screenshot()
@@ -480,13 +503,17 @@ def process(empty, just):
         speak("Shutting down the system")
         os.system("shutdown /s /t 1")
     elif ("restart" in query and ("pc" in query or "system" in query)) or "restart" in query:
+
         speak("Restarting...")
         os.system("shutdown /r /t 1")
     elif ("repeat" in query) or ("what" in query and "say" in query and "you" in query):
         engine.say("I said")
         speak(memory)
-
-
+    else:
+        URL = "http://api.brainshop.ai/get?bid=162049&key=sEN6FttC8GopL3fG&uid=[105611394]&msg=" + query
+        r = requests.get(URL)
+        print(r.json()['cnt'])
+        speak(r.json()['cnt'])
 
 
 if __name__ == "__main__":
