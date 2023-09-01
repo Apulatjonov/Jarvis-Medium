@@ -235,21 +235,17 @@ def send_mail(to, content, subject):
         server.ehlo()
         server.starttls()
         # message = 'Subject: {}\n\n{}'.format(subject, content)
-        server.login("email", "password")
-        server.sendmail("email", to, content)
+        server.login("your_email", "your_password")
+        server.sendmail("your_email", to, content)
         server.close()
         speak("Email sent successfully!")
     except Exception as e:
         speak("Exception occurred!")
 
 
-def check_mail(user):
-    if user == "main" or user == "first":
-        username = "email"
-        password = "password"
-    else:
-        username = "email"
-        password = "password"
+def check_mail():
+    username = "your_email"
+    password = "your_password"
 
     def clean(text):
         return "".join(c if c.isalnum() else "_" for c in text)
@@ -346,11 +342,6 @@ def find_location(query):
     wb.open("https://www.google.com/maps/place/" + query)
 
 
-def screenshot():
-    img = pyautogui.screenshot()
-    img.save('C:/Users/hp/Desktop/screenshot.png')
-    speak("Screenshot saved on desktop")
-
 
 def speak(audio):
     global memory
@@ -424,41 +415,29 @@ def process(empty, just):
             print("Checking....")
             speak("Checking....")
             speak("Here you go!")
-            check_mail("lol")
+            check_mail()
         except Exception as e:
             pass
-    elif (("thank" in query) and ("you" in query) or ("thanks" in query)):
-        speak("You are always welcome")
-    elif ("what is your name" in query) or (("what" in query) and ("your" in query) and ("name" in query)) or (
-            ("your" in query) and ("name" in query)):
-        speak("My name is Jarvis")
-    elif ("hello" in query) or ("hi " in query) or ("good" in query and (
-            ("morning" in query) or ("afternoon" in query) or ("evening" in query) or ("night" in query))):
-        greeting()
-        speak("How are you doing?")
     elif (("search" in query) or ("open" in query)) and (
             ("internet" in query) or ("google" in query) or ("chrome" in query)):
         speak("what you want to search?")
         answer = "None"
         while answer == "None":
             answer = take_command()
-        chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+        chrome_path = 'C:/Program Files/Google/Chrome/Application/chrome.exe %s'
         wb.get(chrome_path).open_new_tab(
-            "https://www.google.com/search?q=" + answer + "&rlz=1C1GCEA_enUZ938UZ938&sxsrf=ALiCzsbqICJxTzjJW2HF5l-ONOpwhsOXNg%3A1653344647243&ei=hwmMYum_DqKSxc8P_82iwAo&ved=0ahUKEwipn4_j1Pb3AhUiSfEDHf-mCKgQ4dUDCA4&uact=5&oq=apulatjonov&gs_lcp=Cgdnd3Mtd2l6EAMyBggAEA0QCjIICAAQHhANEAoyCAgAEB4QDRAKMgoIABAeEA8QDRAKMgoIABAeEA0QBRAKMgwIABAeEA8QDRAFEAoyCggAEB4QDxANEAoyCggAEB4QDxANEAo6BwgAEEcQsAM6BwgAELADEEM6BAgjECc6BQgAEJECOggILhDUAhCRAjoLCC4QgAQQxwEQ0QM6CwguEIAEEMcBEKMCOgUIABCABDoECAAQQzoKCC4QxwEQowIQQzoICC4QgAQQ1AI6BQguEIAEOgcIABCABBAKOgQIABAKSgQIQRgASgQIRhgAUKMFWLMPYLAQaAJwAXgAgAHXAYgBiA2SAQUwLjguMpgBAKABAcgBCsABAQ&sclient=gws-wiz")
+            "https://www.google.com/search?q=" + answer)
     elif (("search" in query) or ("open" in query)) and (
             ("youtube" in query) or (("you" in query) and ("tube" in query))):
         speak("what you want to search?")
         answer = "None"
         while answer == "None":
             answer = take_command()
-        chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+        chrome_path = 'C:/Program Files/Google/Chrome/Application/chrome.exe %s'
         wb.get(chrome_path).open_new_tab(
-            "https://www.youtube.com/search?q=" + answer + "&rlz=1C1GCEA_enUZ938UZ938&sxsrf=ALiCzsbqICJxTzjJW2HF5l-ONOpwhsOXNg%3A1653344647243&ei=hwmMYum_DqKSxc8P_82iwAo&ved=0ahUKEwipn4_j1Pb3AhUiSfEDHf-mCKgQ4dUDCA4&uact=5&oq=apulatjonov&gs_lcp=Cgdnd3Mtd2l6EAMyBggAEA0QCjIICAAQHhANEAoyCAgAEB4QDRAKMgoIABAeEA8QDRAKMgoIABAeEA0QBRAKMgwIABAeEA8QDRAFEAoyCggAEB4QDxANEAoyCggAEB4QDxANEAo6BwgAEEcQsAM6BwgAELADEEM6BAgjECc6BQgAEJECOggILhDUAhCRAjoLCC4QgAQQxwEQ0QM6CwguEIAEEMcBEKMCOgUIABCABDoECAAQQzoKCC4QxwEQowIQQzoICC4QgAQQ1AI6BQguEIAEOgcIABCABBAKOgQIABAKSgQIQRgASgQIRhgAUKMFWLMPYLAQaAJwAXgAgAHXAYgBiA2SAQUwLjguMpgBAKABAcgBCsABAQ&sclient=gws-wiz")
+            "https://www.youtube.com/search?q=" + answer)
     elif (("check" in query) or (("What" in query) and ("my" in query))) and ("battery" in query):
         cpu()
-    elif ((("tell" in query) or ("can") in query) and ("joke" in query)) or (("tell" in query) and ("funny" in query)):
-        joke()
-        speak("haha")
     elif (("go" in query) and ("offline" in query)) or (("shut" in query) and ("down" in query)):
         speak("Going Offline!")
         quit()
@@ -467,7 +446,7 @@ def process(empty, just):
         telegram_path = r'C:/Users/user/AppData/Roaming/Telegram Desktop/Telegram.exe'
         os.startfile(telegram_path)
     elif (("take" in query) or ("write" in query)) and ("note" in query):
-        speak("what should I write, Sire?")
+        speak("what should 1I write, Sire?")
         notes = "None"
         silent = False
         while notes == "None":
@@ -492,8 +471,6 @@ def process(empty, just):
         speak("Showing notes!")
         file = open('C:/Users/user/Desktop/notes.txt', "r")
         print(file.read())
-    elif ("snapshot" in query) or ("screenshot" in query):
-        screenshot()
     elif (("find" in query) or ("show" in query)) and (("location" in query) or ("address" in query)):
         find_location(query)
     elif ("log out" in query):
@@ -510,9 +487,8 @@ def process(empty, just):
         engine.say("I said")
         speak(memory)
     else:
-        URL = "http://api.brainshop.ai/get?bid=162049&key=sEN6FttC8GopL3fG&uid=[105611394]&msg=" + query
+        URL = "http://api.brainshop.ai/get?bid=your_bid&key=your_key&uid=[random_id]&msg=" + query
         r = requests.get(URL)
-        print(r.json()['cnt'])
         speak(r.json()['cnt'])
 
 
